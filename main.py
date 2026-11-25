@@ -13,7 +13,7 @@ flask_app = Flask(__name__)
 def home():
     return "Rexxie AI Bot is LIVE - Deriv + Pocket, 80% only"
 def run_flask():
-        port = int(os.getenv("PORT", 10000))
+    port = int(os.getenv("PORT", 10000))
     flask_app.run(host="0.0.0.0", port=port)
 threading.Thread(target=run_flask, daemon=True).start()
 
