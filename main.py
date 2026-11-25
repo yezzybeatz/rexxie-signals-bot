@@ -2,6 +2,7 @@ from flask import Flask
 import threading
 import os
 import random
+from datetime import datetime, timedelta
 from telegram import Update, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ApplicationBuilder, CommandHandler, CallbackQueryHandler, ContextTypes
 
@@ -30,7 +31,7 @@ def make_signal(pair, market):
     if total < 80:
         return None
     direction = random.choice(["CALL 🟢 UP", "PUT 🔴 DOWN"])
-    return f"📊 *REXXIE AI SIGNAL*\n\nMarket: {market}\nPair: {pair}\nDirection: {direction}\nTimeframe: 5 min\nConfluence: {total}% ✅\n\nTrend: {trend}/20\nRSI: {rsi}/20\nSupport/Resistance: {support}/20\nMomentum: {momentum}/20\nVolume: {volume}/20\n\n⚠️ Signals only - Trade manually\n80%+ only for safety"
+    return f"📊 *REXXIE AI SIGNAL*\n\nMarket: {market}\nPair: {pair}\nDirection: {direction}\nExpiration: 5 minutes\nEntry at: {(datetime.now()+timedelta(minutes=4)).strftime('%H:%M')} (in ~4 mins - get ready)\nExpiry at: {(datetime.now()+timedelta(minutes=9)).strftime('%H:%M')}\nConfluence: {total}% ✅\n\nTrend: {trend}/20\nRSI: {rsi}/20\nSupport/Resistance: {support}/20\nMomentum: {momentum}/20\nVolume: {volume}/20\n\n❌ NO MARTINGALE - 1 Trade Only\n⚠️ Signals only - Trade manually\n80%+ only for safety"
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     keyboard = [
@@ -62,7 +63,7 @@ async def scan(update: Update, context: ContextTypes.DEFAULT_TYPE):
         if sig:
             await update.message.reply_text(sig, parse_mode="Markdown")
             found += 1
-            if found >= 3:
+            if found >= 1:
                 break
     if found == 0:
         await update.message.reply_text("No signal reached 80% this scan. That's safety working. Try again in 5-10 mins.")
