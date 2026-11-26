@@ -6,6 +6,15 @@ from telegram.ext import ApplicationBuilder, CommandHandler, CallbackQueryHandle
 import websocket
 
 TOKEN = os.environ.get("TELEGRAM_TOKEN", "")
+from flask import Flask
+import threading
+_keep = Flask(__name__)
+@_keep.route("/")
+def _home():
+    return "Rexxie Bot LIVE"
+def _run_keep():
+    _keep.run(host="0.0.0.0", port=int(os.environ.get("PORT", 10000)))
+threading.Thread(target=_run_keep, daemon=True).start()
 APP_ID = "1089"
 LAGOS = pytz.timezone("Africa/Lagos")
 
